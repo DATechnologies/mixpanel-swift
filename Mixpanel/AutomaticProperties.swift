@@ -21,62 +21,58 @@ class AutomaticProperties {
     static let automaticPropertiesLock = ReadWriteLock(label: "automaticPropertiesLock")
 
     static var properties: InternalProperties = {
-        objc_sync_enter(AutomaticProperties.self); defer { objc_sync_exit(AutomaticProperties.self) }
         var p = InternalProperties()
-        #if os(iOS) || TV_OS
-        let screenSize = UIScreen.main.bounds.size
-        p["$screen_height"]     = Int(screenSize.height)
-        p["$screen_width"]      = Int(screenSize.width)
-        p["$os"]                = UIDevice.current.systemName
-        p["$os_version"]        = UIDevice.current.systemVersion
 
-        #elseif MAC_OS
-        if let screenSize = NSScreen.main?.frame.size {
+        ReadWriteLock.mixpanel.read {
+            #if os(iOS)
+            let screenSize = UIScreen.main.bounds.size
             p["$screen_height"]     = Int(screenSize.height)
             p["$screen_width"]      = Int(screenSize.width)
-        }
-        p["$os"]                = "macOS"
-        p["$os_version"]        = ProcessInfo.processInfo.operatingSystemVersionString
+            p["$os"]                = UIDevice.current.systemName
+            p["$os_version"]        = UIDevice.current.systemVersion
 
-        #elseif WATCH_OS
-        let watchDevice = WKInterfaceDevice.current()
-        p["$os"]                = watchDevice.systemName
-        p["$os_version"]        = watchDevice.systemVersion
-        p["$watch_model"]       = AutomaticProperties.watchModel()
-        let screenSize = watchDevice.screenBounds.size
-        p["$screen_width"]      = Int(screenSize.width)
-        p["$screen_height"]     = Int(screenSize.height)
-        
-        #endif
+            #elseif WATCH_OS
+            let watchDevice = WKInterfaceDevice.current()
+            p["$os"]                = watchDevice.systemName
+            p["$os_version"]        = watchDevice.systemVersion
+            p["$watch_model"]       = AutomaticProperties.watchModel()
+            let screenSize = watchDevice.screenBounds.size
+            p["$screen_width"]      = Int(screenSize.width)
+            p["$screen_height"]     = Int(screenSize.height)
+            #endif
 
-        let infoDict = Bundle.main.infoDictionary
-        if let infoDict = infoDict {
-            p["$app_build_number"]     = infoDict["CFBundleVersion"]
-            p["$app_version_string"]   = infoDict["CFBundleShortVersionString"]
+            let infoDict = Bundle.main.infoDictionary
+            if let infoDict = infoDict {
+                p["$app_build_number"]     = infoDict["CFBundleVersion"]
+                p["$app_version_string"]   = infoDict["CFBundleShortVersionString"]
+            }
+            p["mp_lib"]             = "swift"
+            p["$lib_version"]       = AutomaticProperties.libVersion()
+            p["$manufacturer"]      = "Apple"
+            p["$model"]             = AutomaticProperties.deviceModel()
         }
-        p["mp_lib"]             = "swift"
-        p["$lib_version"]       = AutomaticProperties.libVersion()
-        p["$manufacturer"]      = "Apple"
-        p["$model"]             = AutomaticProperties.deviceModel()
+
         return p
     }()
 
     static var peopleProperties: InternalProperties = {
-        objc_sync_enter(AutomaticProperties.self); defer { objc_sync_exit(AutomaticProperties.self) }
         var p = InternalProperties()
-        let infoDict = Bundle.main.infoDictionary
-        if let infoDict = infoDict {
-            p["$ios_app_version"] = infoDict["CFBundleVersion"]
-            p["$ios_app_release"] = infoDict["CFBundleShortVersionString"]
+
+        ReadWriteLock.mixpanel.read {
+            let infoDict = Bundle.main.infoDictionary
+            if let infoDict = infoDict {
+                p["$ios_app_version"] = infoDict["CFBundleVersion"]
+                p["$ios_app_release"] = infoDict["CFBundleShortVersionString"]
+            }
+            p["$ios_device_model"]  = AutomaticProperties.deviceModel()
+            #if !os(OSX) && !WATCH_OS
+            p["$ios_version"]       = UIDevice.current.systemVersion
+            #else
+            p["$ios_version"]       = ProcessInfo.processInfo.operatingSystemVersionString
+            #endif
+            p["$ios_lib_version"]   = AutomaticProperties.libVersion()
+            p["$swift_lib_version"] = AutomaticProperties.libVersion()
         }
-        p["$ios_device_model"]  = AutomaticProperties.deviceModel()
-        #if !os(OSX) && !WATCH_OS
-        p["$ios_version"]       = UIDevice.current.systemVersion
-        #else
-        p["$ios_version"]       = ProcessInfo.processInfo.operatingSystemVersionString
-        #endif
-        p["$ios_lib_version"]   = AutomaticProperties.libVersion()
-        p["$swift_lib_version"] = AutomaticProperties.libVersion()
 
         return p
     }()

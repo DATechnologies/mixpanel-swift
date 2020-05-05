@@ -25,18 +25,20 @@ class Flush: AppLifecycle {
     var _flushInterval = 0.0
     var flushInterval: Double {
         set {
-            objc_sync_enter(self)
-            _flushInterval = newValue
-            objc_sync_exit(self)
+            ReadWriteLock.mixpanel.write { [weak self] in
+                self?._flushInterval = newValue
+            }
 
             delegate?.flush(completion: nil)
             startFlushTimer()
         }
         get {
-            objc_sync_enter(self)
-            defer { objc_sync_exit(self) }
+            var flushInterval: Double?
+            ReadWriteLock.mixpanel.read { [weak self] in
+                flushInterval = self?._flushInterval
+            }
 
-            return _flushInterval
+            return flushInterval ?? 0
         }
     }
 

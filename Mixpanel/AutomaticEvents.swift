@@ -119,13 +119,12 @@ class AutomaticEvents: NSObject, SKPaymentTransactionObserver, SKProductsRequest
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         var productsRequest = SKProductsRequest()
         var productIdentifiers: Set<String> = []
-        objc_sync_enter(awaitingTransactions)
-        for transaction:AnyObject in transactions {
-            if let trans = transaction as? SKPaymentTransaction {
-                switch trans.transactionState {
+        ReadWriteLock.mixpanel.write { [weak self] in
+            for transaction in transactions {
+                switch transaction.transactionState {
                 case .purchased:
-                    productIdentifiers.insert(trans.payment.productIdentifier)
-                    awaitingTransactions[trans.payment.productIdentifier] = trans
+                    productIdentifiers.insert(transaction.payment.productIdentifier)
+                    self?.awaitingTransactions[transaction.payment.productIdentifier] = transaction
                     break
                 case .failed: break
                 case .restored: break
@@ -133,7 +132,6 @@ class AutomaticEvents: NSObject, SKPaymentTransactionObserver, SKProductsRequest
                 }
             }
         }
-        objc_sync_exit(awaitingTransactions)
         if productIdentifiers.count > 0 {
             productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers)
             productsRequest.delegate = self
@@ -161,18 +159,17 @@ class AutomaticEvents: NSObject, SKPaymentTransactionObserver, SKProductsRequest
         return false
     }
 
-
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        objc_sync_enter(awaitingTransactions)
-        for product in response.products {
-            if let trans = awaitingTransactions[product.productIdentifier] {
-                delegate?.track(event: "$ae_iap", properties: ["$ae_iap_price": "\(product.price)",
-                    "$ae_iap_quantity": trans.payment.quantity,
-                    "$ae_iap_name": product.productIdentifier])
-                awaitingTransactions.removeValue(forKey: product.productIdentifier)
+        ReadWriteLock.mixpanel.write { [weak self] in
+            for product in response.products {
+                if let trans = self?.awaitingTransactions[product.productIdentifier] {
+                    self?.delegate?.track(event: "$ae_iap", properties: ["$ae_iap_price": "\(product.price)",
+                        "$ae_iap_quantity": trans.payment.quantity,
+                        "$ae_iap_name": product.productIdentifier])
+                    self?.awaitingTransactions.removeValue(forKey: product.productIdentifier)
+                }
             }
         }
-        objc_sync_exit(awaitingTransactions)
     }
 
     #if DECIDE
