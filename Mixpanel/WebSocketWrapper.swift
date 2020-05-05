@@ -65,17 +65,18 @@ class WebSocketWrapper: WebSocketDelegate {
     }
 
     func setSessionObjectSynchronized(with value: Any, for key: String) {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
-
-        session[key] = value
+        ReadWriteLock.mixpanel.write { [weak self] in
+            self?.session[key] = value
+        }
     }
 
     func getSessionObjectSynchronized(for key: String) -> Any? {
-        objc_sync_enter(self)
-        defer { objc_sync_exit(self) }
+        var sessionObject: Any?
+        ReadWriteLock.mixpanel.read { [weak self] in
+            sessionObject = self?.session[key]
+        }
 
-        return session[key]
+        return sessionObject
     }
 
     func open(initiate: Bool, maxInterval: Int = 0, maxRetries: Int = 0) {
