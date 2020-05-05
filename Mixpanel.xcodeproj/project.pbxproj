@@ -48,7 +48,6 @@
 		86F86F3622497F1200B69832 /* AutomaticEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E151FA371E70DFB5002EF53D /* AutomaticEvents.swift */; };
 		86F86F3722497F2900B69832 /* AutomaticEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E151FA371E70DFB5002EF53D /* AutomaticEvents.swift */; };
 		BB9614171F3BB87700C3EF3E /* ReadWriteLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9614161F3BB87700C3EF3E /* ReadWriteLock.swift */; };
-		DF70877724612A4F0075C8BC /* MixpanelQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF70877624612A4F0075C8BC /* MixpanelQueue.swift */; };
 		E10D118D1EC0F30900195CCD /* AutomaticEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E151FA371E70DFB5002EF53D /* AutomaticEvents.swift */; };
 		E115234D1D7A59AF00657E80 /* UIImageToNSDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E115234C1D7A59AF00657E80 /* UIImageToNSDictionary.swift */; };
 		E115234F1D7F58B000657E80 /* CGSizeToNSDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E115234E1D7F58B000657E80 /* CGSizeToNSDictionary.swift */; };
@@ -191,7 +190,6 @@
 		86EE92C721370CA600D55487 /* ExceptionWrapper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExceptionWrapper.m; sourceTree = "<group>"; };
 		86F86E81224404BD00B69832 /* Mixpanel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Mixpanel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB9614161F3BB87700C3EF3E /* ReadWriteLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReadWriteLock.swift; sourceTree = "<group>"; };
-		DF70877624612A4F0075C8BC /* MixpanelQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixpanelQueue.swift; sourceTree = "<group>"; };
 		E115234C1D7A59AF00657E80 /* UIImageToNSDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageToNSDictionary.swift; sourceTree = "<group>"; };
 		E115234E1D7F58B000657E80 /* CGSizeToNSDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGSizeToNSDictionary.swift; sourceTree = "<group>"; };
 		E11523501D7F5C7500657E80 /* UIEdgeInsetsToNSDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIEdgeInsetsToNSDictionary.swift; sourceTree = "<group>"; };
@@ -346,14 +344,6 @@
 			name = PushNotifications;
 			sourceTree = "<group>";
 		};
-		DF70877524612A290075C8BC /* Custom Classes */ = {
-			isa = PBXGroup;
-			children = (
-				DF70877624612A4F0075C8BC /* MixpanelQueue.swift */,
-			);
-			path = "Custom Classes";
-			sourceTree = "<group>";
-		};
 		E11594731CFF1491007F8B4F = {
 			isa = PBXGroup;
 			children = (
@@ -391,7 +381,6 @@
 				E189D8F91D5A6908007F3F29 /* Decide */,
 				51DD56771D306B620045D3DB /* Log */,
 				E189D8FA1D5A692A007F3F29 /* Utilities */,
-				DF70877524612A290075C8BC /* Custom Classes */,
 				E115948A1CFF1538007F8B4F /* Mixpanel.swift */,
 				E115948D1D000709007F8B4F /* MixpanelInstance.swift */,
 				E11594921D0036E1007F8B4F /* Persistence.swift */,
@@ -951,7 +940,6 @@
 				E115234D1D7A59AF00657E80 /* UIImageToNSDictionary.swift in Sources */,
 				E118E9FE1E37DE3B00223C47 /* TakeoverNotification.swift in Sources */,
 				E19D12941D9C5E5800A8016D /* VariantAction.swift in Sources */,
-				DF70877724612A4F0075C8BC /* MixpanelQueue.swift in Sources */,
 				E1D335CC1D303A0D00E68E12 /* FlushRequest.swift in Sources */,
 				E115234F1D7F58B000657E80 /* CGSizeToNSDictionary.swift in Sources */,
 				E154221F1D70DB09009421A0 /* WebSocket.swift in Sources */,

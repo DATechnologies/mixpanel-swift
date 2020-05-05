@@ -25,3 +25,8 @@ class ReadWriteLock {
         })
     }
 }
+
+extension ReadWriteLock {
+
+    static let mixpanel = ReadWriteLock(label: "com.rapptrlabs.mixpanel")
+}
